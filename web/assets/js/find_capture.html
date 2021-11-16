@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Hook</title>
+</head>
+<body>
+<div id="app"></div>
+<div id="search-capture">
+
+</div>
+</body>
+
+<style>
+    #app {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 999;
+        background-color: #038CE2;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        size: 30px;
+        color: white;
+    }
+
+    .letter-frame {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 30px;
+        font-weight: bold;
+        white-space: pre;
+    }
+</style>
+
+<script>
+    const ALPHABET = 'abcdefghijklmnopqrstuvwxyz-';
+    let frames = {};
+
+    window.onload = () => {
+        let searchCapture = document.getElementById('search-capture');
+        let app = document.getElementById('app');
+
+        document.addEventListener('scroll', (e) => {
+            let capturedLetter = ALPHABET[Math.floor(window.scrollY / window.innerHeight)];
+            app.innerHTML = frames[capturedLetter].innerHTML;
+            for (let i = 0; i < ALPHABET.length; i++) {
+                let letter = ALPHABET[i];
+                let currentText = frames[letter].innerHTML;
+                let newText = currentText.substr(0, currentText.length - 1) + capturedLetter + currentText[currentText.length - 1];
+                let newFrame = frames[letter].cloneNode();
+                newFrame.innerHTML = newText;
+                frames[letter].style.display = 'none';
+                searchCapture.append(newFrame);
+                frames[letter] = newFrame;
+            }
+        });
+
+        for (let i = 0; i < ALPHABET.length; i++) {
+            let letterFrame = document.createElement('div');
+            letterFrame.classList.add('letter-frame');
+            letterFrame.innerHTML = ALPHABET[i];
+            searchCapture.append(letterFrame);
+            frames[ALPHABET[i]] = letterFrame;
+        }
+    }
+</script>
+</html>
